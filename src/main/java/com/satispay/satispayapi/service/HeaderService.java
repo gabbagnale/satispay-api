@@ -14,6 +14,9 @@ import com.satispay.satispayapi.models.SignatureElement;
 @Component
 public class HeaderService {
 
+	/**
+	 * Builds the signature string to encrypt from a given list of elements 
+	 * **/
 	public String buildSignatureString(List<SignatureElement> signatureElements) {
 		StringBuffer writer = new StringBuffer();
 		for (int i = 0; i < signatureElements.size(); i++) {
@@ -28,6 +31,9 @@ public class HeaderService {
 		return writer.toString();
 	}
 
+	/**
+	 * Builds the authentication header string to encrypt from a given list of elements 
+	 * **/
 	public String buildAuthHeader(List<SignatureElement> authElements) {
 		StringBuffer writer = new StringBuffer();
 		
@@ -44,18 +50,10 @@ public class HeaderService {
 		return writer.toString();
 	}
 
-	public String digest(String bodyExample) throws SatispayException {
-		MessageDigest digest;
-		try {
-			digest = MessageDigest.getInstance("SHA-256");
-			byte[] encodedhash = digest.digest(
-					bodyExample.getBytes(StandardCharsets.UTF_8));
-			return Base64.getEncoder().encodeToString(encodedhash);
-		} catch (NoSuchAlgorithmException e) {
-			throw new SatispayException("Wrong algorithm", e.getCause());
-		}
-	}
 
+	/**
+	 * Builds the headers header string from a given list of elements 
+	 * **/
 	public String buildHeadersString(List<SignatureElement> signatureElements) {
 		StringBuffer writer = new StringBuffer();
 		for (int i = 0; i < signatureElements.size(); i++) {

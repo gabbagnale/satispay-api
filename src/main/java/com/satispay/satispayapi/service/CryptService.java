@@ -3,9 +3,11 @@ package com.satispay.satispayapi.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -27,6 +29,9 @@ public class CryptService {
 	@Value("${api.privateKeyPath}")
 	private String privateKeyPath;
 
+	/**
+	 * Encrypt string to byte[] with SHA256withRSA
+	 * **/
 	byte[] encrypt(String message) throws SatispayException {
 		String key;
 		Signature privateSignature;
@@ -57,6 +62,21 @@ public class CryptService {
 			return  privateSignature.sign();
 		} catch (SignatureException e) {
 			throw new SatispayException("error in sign", e.getCause());
+		}
+	}
+	
+	/**
+	 * Does the hash of the body
+	 * **/
+	public String digest(String body) throws SatispayException {
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+			byte[] encodedhash = digest.digest(
+					body.getBytes(StandardCharsets.UTF_8));
+			return Base64.getEncoder().encodeToString(encodedhash);
+		} catch (NoSuchAlgorithmException e) {
+			throw new SatispayException("Wrong algorithm", e.getCause());
 		}
 	}
 

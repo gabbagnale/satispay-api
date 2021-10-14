@@ -1,0 +1,126 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: "Satispay sign"
+  contact:
+    email: "giovanniabbagnale@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+paths:
+  '/satispay/get':
+    get:
+      tags:
+        - Chiamata get alla signature
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+  '/satispay/post':
+    post:
+      tags:
+        - Chiamata post alla signature, invia come body la bodyrequest
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+  '/satispay/put':
+    put:
+      tags:
+        - Chiamata put alla signature, invia come body la bodyrequest e l'id in ingresso come query param.
+      parameters:
+      - in: query
+        name: id
+        schema: 
+          type: "string"
+        required: true
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+  '/satispay/delete':
+    delete:
+      tags:
+        - Chiamata delete alla signature, invia l'id in ingresso come query param.
+      parameters:
+      - in: query
+        name: id
+        schema: 
+          type: "string"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+components:
+  schemas:
+    Response:
+      type: "object"
+      properties:
+        httpStatus:
+          type: "string"
+          example: OK
+        message:
+          type: string
+          description: response della signature
+          example: '{\"authentication_key\":{\"access_key\":\"signature-test-66289\",\"customer_uid\":\"00d25aa7-aa6e-4941-b8af-a18d4d9b8db3\",\"sequence\":7,\"key_type\":\"RSA_PUBLIC_KEY\",\"auth_type\":\"SIGNATURE\",\"role\":\"DEVICE\",\"enable\":true,\"insert_date\":\"2017-11-28T15:04:50.000Z\",\"update_date\":\"2020-04-06T14:45:49.946Z\",\"version\":1},\"signature\":{\"key_id\":\"signature-test-66289\",\"algorithm\":\"RSA_SHA256\",\"headers\":[\"(request-target)\",\"host\",\"date\",\"digest\"],\"signature\":\"kpurksRHjYZEaqKQto1zOdRACT3cTOk+VQpY/tQN9A8C7Ay1zTQRGrF0Bl5mo4JNuzj1fOWCnNyqvj8OflYKTOdNH0jIw/XYHZXYUyUD/dQIzIJLvWcy+vEzOxjn5+ViKUjPbwdD0A+NPRO1Qi2BM+QFfmRgAKuRTsEGkOxwpEHCKaGluUpCE8KoYBYAOBOa3YKsrRlExZQP7jd44aDdhkIE3sXSc3IftbLF1nL82ibRR1MZRDesA9E8WHvuTuOMXenegMCp7TuHiP0j+g2PC34R9/54ifaW8/gSeWsMyAKLptos2IWUocVBA6/UfPrN+w+b466CGmCp8p8/keOhlg==\",\"resign_required\":false,\"iteration_count\":2617,\"valid\":true},\"signed_string\":\"(request-target): put /wally-services/protocol/tests/signature?id=prova\\nhost: staging.authservices.satispay.com\\ndate: Thu, 14 Oct 2021 17:19:10 +0200\\ndigest: SHA-256=0midZRXyZLia8Q/xt1YEmkkCqeUfGjFaFAlopZOf6PQ=\"}'
+    ResponseError:
+      type: "object"
+      properties:
+        httpStatus:
+          type: "string"
+          example: INTERNAL_SERVER_ERROR
+        message:
+          type: string
+          example: 'Cannot connect to endpoint'
+    Request:
+      type: "object"
+      example: "{\"name\": \"Giovanni\",\"surname\": \"Abbagnale\"}"

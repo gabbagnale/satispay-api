@@ -88,7 +88,7 @@ public class ApiService {
 	    SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
 	    String dateString = dateFormat.format(date);
 	    signatureElements.add(new SignatureElement("date", dateString));
-	    String digest = headerService.digest(jsonBody);
+	    String digest = cryptService.digest(jsonBody);
 	    signatureElements.add(new SignatureElement("digest", "SHA-256="+digest));
 	    String signature = headerService.buildSignatureString(signatureElements);
 	    byte[] encryptedMessageBytes = cryptService.encrypt(signature);
@@ -119,7 +119,7 @@ public class ApiService {
 	    SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
 	    String dateString = dateFormat.format(date);
 	    signatureElements.add(new SignatureElement("date", dateString));
-	    String digest = headerService.digest(jsonBody);
+	    String digest = cryptService.digest(jsonBody);
 	    signatureElements.add(new SignatureElement("digest", "SHA-256="+digest));
 	    String signature = headerService.buildSignatureString(signatureElements);
 	    byte[] encryptedMessageBytes = cryptService.encrypt(signature);
