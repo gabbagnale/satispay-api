@@ -23,9 +23,6 @@ import com.satispay.satispayapi.exception.SatispayException;
 @Component
 public class CryptService {
 
-	@Value("${api.publicKeyPath}")
-	private String publicKeyPath;
-
 	@Value("${api.privateKeyPath}")
 	private String privateKeyPath;
 
