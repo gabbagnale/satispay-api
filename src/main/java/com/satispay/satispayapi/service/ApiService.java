@@ -10,11 +10,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import com.satispay.satispayapi.exception.SatispayException;
 import com.satispay.satispayapi.models.SignatureElement;
+import com.satispay.satispayapi.utils.Constants;
 
 @Component
 public class ApiService {
@@ -50,21 +50,21 @@ public class ApiService {
 		String host = url.getHost();
 		String path = url.getPath();
 		List<SignatureElement> signatureElements = new ArrayList<>();
-		signatureElements.add(new SignatureElement("(request-target)", "get " + path));
-		signatureElements.add(new SignatureElement("host", host));
+		signatureElements.add(new SignatureElement(Constants.REQUEST_TARGET, "get " + path));
+		signatureElements.add(new SignatureElement(Constants.HOST, host));
 		Date date=new Date();
 	    SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
 	    String dateString = dateFormat.format(date);
-	    signatureElements.add(new SignatureElement("date", dateString));
+	    signatureElements.add(new SignatureElement(Constants.DATE, dateString));
 		String signature = headerService.buildSignatureString(signatureElements);
 		byte[] encryptedMessageBytes = cryptService.encrypt(signature);
 		String encodedMessage = Base64.getEncoder().encodeToString(encryptedMessageBytes);
 		
 		List<SignatureElement> authElements = new ArrayList<>();
-		authElements.add(new SignatureElement("keyId", keyId));
-		authElements.add(new SignatureElement("algorithm", algorithm));
-		authElements.add(new SignatureElement("headers", headerService.buildHeadersString(signatureElements)));
-		authElements.add(new SignatureElement("signature", encodedMessage));
+		authElements.add(new SignatureElement(Constants.KEY_ID, keyId));
+		authElements.add(new SignatureElement(Constants.ALGORITHM, algorithm));
+		authElements.add(new SignatureElement(Constants.HEADERS, headerService.buildHeadersString(signatureElements)));
+		authElements.add(new SignatureElement(Constants.SIGNATURE, encodedMessage));
 		
 		String auth = headerService.buildAuthHeader(authElements);
 		return consumer.callGet(url, auth, dateString, host);		
@@ -82,23 +82,23 @@ public class ApiService {
 		String host = url.getHost();
 		String path = url.getPath();
 		List<SignatureElement> signatureElements = new ArrayList<>();
-		signatureElements.add(new SignatureElement("(request-target)", "post " + path));
-		signatureElements.add(new SignatureElement("host", host));
+		signatureElements.add(new SignatureElement(Constants.REQUEST_TARGET, "post " + path));
+		signatureElements.add(new SignatureElement(Constants.HOST, host));
 		Date date=new Date();
 	    SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
 	    String dateString = dateFormat.format(date);
-	    signatureElements.add(new SignatureElement("date", dateString));
+	    signatureElements.add(new SignatureElement(Constants.DATE, dateString));
 	    String digest = cryptService.digest(jsonBody);
-	    signatureElements.add(new SignatureElement("digest", "SHA-256="+digest));
+	    signatureElements.add(new SignatureElement(Constants.DIGEST, Constants.DIGEST_FORMAT+digest));
 	    String signature = headerService.buildSignatureString(signatureElements);
 	    byte[] encryptedMessageBytes = cryptService.encrypt(signature);
 		String encodedMessage = Base64.getEncoder().encodeToString(encryptedMessageBytes);
 		List<SignatureElement> authElements = new ArrayList<>();
-		authElements.add(new SignatureElement("keyId", keyId));
-		authElements.add(new SignatureElement("algorithm", algorithm));
-		authElements.add(new SignatureElement("headers", headerService.buildHeadersString(signatureElements)));
-		authElements.add(new SignatureElement("digest", "SHA-256="+digest));
-		authElements.add(new SignatureElement("signature", encodedMessage));
+		authElements.add(new SignatureElement(Constants.KEY_ID, keyId));
+		authElements.add(new SignatureElement(Constants.ALGORITHM, algorithm));
+		authElements.add(new SignatureElement(Constants.HEADERS, headerService.buildHeadersString(signatureElements)));
+		authElements.add(new SignatureElement(Constants.DIGEST, Constants.DIGEST_FORMAT+digest));
+		authElements.add(new SignatureElement(Constants.SIGNATURE, encodedMessage));
 		String auth = headerService.buildAuthHeader(authElements);
 		return consumer.callWrite(url, auth, dateString, host, jsonBody, digest, "POST");
 	}
@@ -113,23 +113,23 @@ public class ApiService {
 		String host = url.getHost();
 		String path = url.getPath();
 		List<SignatureElement> signatureElements = new ArrayList<>();
-		signatureElements.add(new SignatureElement("(request-target)", "put " + path + "?id=" + id));
-		signatureElements.add(new SignatureElement("host", host));
+		signatureElements.add(new SignatureElement(Constants.REQUEST_TARGET, "put " + path + "?id=" + id));
+		signatureElements.add(new SignatureElement(Constants.HOST, host));
 		Date date=new Date();
 	    SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
 	    String dateString = dateFormat.format(date);
-	    signatureElements.add(new SignatureElement("date", dateString));
+	    signatureElements.add(new SignatureElement(Constants.DATE, dateString));
 	    String digest = cryptService.digest(jsonBody);
-	    signatureElements.add(new SignatureElement("digest", "SHA-256="+digest));
+	    signatureElements.add(new SignatureElement(Constants.DIGEST, Constants.DIGEST_FORMAT+digest));
 	    String signature = headerService.buildSignatureString(signatureElements);
 	    byte[] encryptedMessageBytes = cryptService.encrypt(signature);
 		String encodedMessage = Base64.getEncoder().encodeToString(encryptedMessageBytes);
 		List<SignatureElement> authElements = new ArrayList<>();
-		authElements.add(new SignatureElement("keyId", keyId));
-		authElements.add(new SignatureElement("algorithm", algorithm));
-		authElements.add(new SignatureElement("headers", headerService.buildHeadersString(signatureElements)));
-		authElements.add(new SignatureElement("digest", "SHA-256="+digest));
-		authElements.add(new SignatureElement("signature", encodedMessage));
+		authElements.add(new SignatureElement(Constants.KEY_ID, keyId));
+		authElements.add(new SignatureElement(Constants.ALGORITHM, algorithm));
+		authElements.add(new SignatureElement(Constants.HEADERS, headerService.buildHeadersString(signatureElements)));
+		authElements.add(new SignatureElement(Constants.DIGEST, Constants.DIGEST_FORMAT+digest));
+		authElements.add(new SignatureElement(Constants.SIGNATURE, encodedMessage));
 		String auth = headerService.buildAuthHeader(authElements);
 		return consumer.callWrite(url, auth, dateString, host, jsonBody, digest, "PUT");
 		
@@ -145,21 +145,21 @@ public class ApiService {
 		String host = url.getHost();
 		String path = url.getPath();
 		List<SignatureElement> signatureElements = new ArrayList<>();
-		signatureElements.add(new SignatureElement("(request-target)", "delete " + path + "?id=" + id));
-		signatureElements.add(new SignatureElement("host", host));
+		signatureElements.add(new SignatureElement(Constants.REQUEST_TARGET, "delete " + path + "?id=" + id));
+		signatureElements.add(new SignatureElement(Constants.HOST, host));
 		Date date=new Date();
 	    SimpleDateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
 	    String dateString = dateFormat.format(date);
-	    signatureElements.add(new SignatureElement("date", dateString));
+	    signatureElements.add(new SignatureElement(Constants.DATE, dateString));
 		String signature = headerService.buildSignatureString(signatureElements);
 		byte[] encryptedMessageBytes = cryptService.encrypt(signature);
 		String encodedMessage = Base64.getEncoder().encodeToString(encryptedMessageBytes);
 		
 		List<SignatureElement> authElements = new ArrayList<>();
-		authElements.add(new SignatureElement("keyId", keyId));
-		authElements.add(new SignatureElement("algorithm", algorithm));
-		authElements.add(new SignatureElement("headers", headerService.buildHeadersString(signatureElements)));
-		authElements.add(new SignatureElement("signature", encodedMessage));
+		authElements.add(new SignatureElement(Constants.KEY_ID, keyId));
+		authElements.add(new SignatureElement(Constants.ALGORITHM, algorithm));
+		authElements.add(new SignatureElement(Constants.HEADERS, headerService.buildHeadersString(signatureElements)));
+		authElements.add(new SignatureElement(Constants.SIGNATURE, encodedMessage));
 		
 		String auth = headerService.buildAuthHeader(authElements);
 		return consumer.callDelete(url, auth, dateString, host);	
